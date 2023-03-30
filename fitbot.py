@@ -56,7 +56,7 @@ if api:
     llm = OpenAI(
         temperature=0,
         openai_api_key=api,
-        model_name=MODEL,
+        model_name=MODEL
     )
 
     # CREATE CONV MEMORY
