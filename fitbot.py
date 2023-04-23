@@ -8,8 +8,33 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import re
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from google_auth_oauthlib.flow import Flow
+
 
 _DEFAULT_TEMPLATE = "As a fitness AI assistant, provide clear and concise answers to users' questions. Use lists when possible, organize answers into key points, and be helpful and informative to aid users in achieving their fitness goals."
+
+from google_auth_oauthlib.flow import InstalledAppFlow
+
+
+def create_google_auth_url(client_id, redirect_uri, scope):
+    client_config = {
+        "installed": {
+            "client_id": client_id,
+            "redirect_uris": [redirect_uri],
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://accounts.google.com/o/oauth2/token",
+        }
+    }
+
+    flow = InstalledAppFlow.from_client_config(
+        client_config=client_config,
+        scopes=scope,
+    )
+    auth_url, _ = flow.authorization_url(prompt="consent")
+    return auth_url
+
 
 def google_search_api(query, api_key, custom_search_engine_id):
     url = f"https://www.googleapis.com/customsearch/v1?key={api_key}&cx={custom_search_engine_id}&q={query}"
@@ -44,8 +69,6 @@ def display_search_results(results, max_results=5):
             st.markdown(f"[{item['title']}]({item['link']})")
             st.markdown(item['snippet'])
             st.markdown("---")
-    else:
-        st.warning("No search results found.")
 
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -104,9 +127,11 @@ if api:
     )
 
 else:
-    st.error("No API found, if you don't have an API keys, please get one from here: "
-             "https://platform.openai.com/account/api-keys, "
-             "https://programmablesearchengine.google.com ")
+    st.error("""No API found, if you don't have an API keys, please get one from here           
+    
+    GPT API: https://platform.openai.com/account/api-keys
+    CSE ID: https://programmablesearchengine.google.com 
+    GOOGLE API: https://developers.google.com/custom-search/v1/introduction?apix=true&hl=en""")
 
 st.sidebar.button("New Chat", on_click=new_chat, type='primary')
 
@@ -144,8 +169,7 @@ if selected_option == "FitBot AI Personal Trainer":
 elif selected_option == "Search":
     search_query = st.text_input("Search Google:", "")
     if search_query and google_api_key and custom_search_engine_id:
-        search_results = google_search_api(search_query, google_api_key,
-                                           custom_search_engine_id)  # Use the new google_search_api function
+        search_results = google_search_api(search_query, google_api_key,custom_search_engine_id)
         display_search_results(search_results)
 else:
     user_input = get_text()
@@ -165,3 +189,29 @@ else:
         for i in range(len(st.session_state['generated']) - 1, -1, -1):
             st.info(st.session_state["past"][i], icon="👨")
             st.success(st.session_state["generated"][i], icon="🤖")
+
+CLIENT_ID = "519069611437-j8sc6u5tvqp5e39taii40i57pgtdg2h0.apps.googleusercontent.com"
+REDIRECT_URI = "http://localhost:8501"  # Update this with your app's redirect URI
+SCOPES = ["openid", "https://www.googleapis.com/auth/userinfo.email"]
+
+# Display the "Sign In with Google" button and create the authorization URL
+google_auth_url = create_google_auth_url(CLIENT_ID, REDIRECT_URI, SCOPES)
+st.markdown(f'[Sign In with Google]({google_auth_url})', unsafe_allow_html=True)
+
+# Get the "code" parameter from the URL when the user is redirected back to the app after signing in
+code = st.experimental_get_query_params().get("code")
+
+if code:
+    # Exchange the authorization code for an access token and ID token
+    flow = Flow.from_client_info(
+        client_id=CLIENT_ID,
+        client_secret=None,
+        scopes=SCOPES,
+        redirect_uri=REDIRECT_URI
+    )
+    flow.fetch_token(code=code)
+
+    # Verify the ID token and get the user's email
+    id_info = id_token.verify_oauth2_token(flow.credentials.id_token, requests.Request(), CLIENT_ID)
+    user_email = id_info["email"]
+    st.write(f"Signed in as {user_email}")
