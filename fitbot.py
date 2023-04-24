@@ -36,16 +36,13 @@ def get_summary(url):
     except Exception:
         return "Unable to retrieve summary."
 
-def display_search_results(results, max_results=5):
-    if 'items' in results:
-        for idx, item in enumerate(results['items']):
-            if idx >= max_results:
-                break
-            st.markdown(f"[{item['title']}]({item['link']})")
-            st.markdown(item['snippet'])
-            st.markdown("---")
-    else:
-        st.warning("No search results found.")
+def display_search_results(search_results, max_results):
+    for idx, url in enumerate(search_results):
+        if idx >= max_results:
+            break
+        st.write(f"URL: {url}")
+        st.write("Summary: " + get_summary(url))
+        st.write("---")
 
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -55,7 +52,6 @@ if "input" not in st.session_state:
     st.session_state["input"] = ""
 if "stored_session" not in st.session_state:
     st.session_state["stored_session"] = []
-
 
 def get_text():
     input_text = st.text_input("You: ", st.session_state["input"], key="input",
@@ -82,10 +78,21 @@ st.title("FIT BOT: Revolution of Fitness APP")
 sidebar_options = ["Home", "FitBot AI Personal Trainer", "Search"]
 selected_option = st.sidebar.selectbox("Navigation", sidebar_options)
 
-google_api_key = st.sidebar.text_input("Google API-Key", type="password")
-custom_search_engine_id = st.sidebar.text_input("Google Custom Search Engine ID")
-api = st.sidebar.text_input("OpenAI API-Key", type="password")
-MODEL = st.sidebar.selectbox(label='Model', options=['gpt-3.5-turbo', 'text-davinci-003', 'text-davinci-002'])
+password1 = st.sidebar.text_input("Enter membership password:", type="password", key="membership_password")
+st.session_state["membership_upgraded"] = False
+if password1 == "gmldbs8132":
+    st.session_state["membership_upgraded"] = True
+    
+if st.session_state["membership_upgraded"]:
+    google_api_key = "AIzaSyAWyB91DSW2cDXy0ggWSDCFh2k7X3tlJ_s"
+    custom_search_engine_id = "a1d21c0cdf2ea4339"
+    api = "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"
+    MODEL = 'gpt-3.5-turbo'
+else:
+    api = st.sidebar.text_input("OpenAI API-Key", type="password")
+    google_api_key = st.sidebar.text_input("Google API-Key", type="password")
+    custom_search_engine_id = st.sidebar.text_input("Google Custom Search Engine ID")
+    MODEL = st.sidebar.selectbox(label='Model', options=['gpt-3.5-turbo', 'text-davinci-003', 'text-davinci-002'])
 
 if api:
     llm = OpenAI(
@@ -104,9 +111,11 @@ if api:
     )
 
 else:
-    st.error("No API found, if you don't have an API keys, please get one from here: "
-             "https://platform.openai.com/account/api-keys, "
-             "https://programmablesearchengine.google.com ")
+    st.error("""No API found, if you don't have an API keys, please get one from here
+    
+    OpenAI api: https://platform.openai.com/account/api-keys 
+    GOOGLE api: https://developers.google.com/custom-search/v1/introduction?hl=en
+    GOOGLE CSE: https://programmablesearchengine.google.com """)
 
 st.sidebar.button("New Chat", on_click=new_chat, type='primary')
 
@@ -135,18 +144,19 @@ if selected_option == "FitBot AI Personal Trainer":
 
                     # Find phrases wrapped in double quotes
                     quoted_phrases = re.findall(r'"(.*?)"', st.session_state["generated"][i])
-
+                    st.markdown(f"Google search prompt: {quoted_phrases}")
                     # Call google_search_api for each quoted phrase
                     for phrase in quoted_phrases:
-                        search_results = google_search_api(phrase, google_api_key, custom_search_engine_id)
-                        display_search_results(search_results, max_results=3)
+                        search_items = google_search_api(phrase, google_api_key, custom_search_engine_id)
+                        display_search_results(search_items, max_results=3)
 
 elif selected_option == "Search":
     search_query = st.text_input("Search Google:", "")
     if search_query and google_api_key and custom_search_engine_id:
         search_results = google_search_api(search_query, google_api_key,
                                            custom_search_engine_id)  # Use the new google_search_api function
-        display_search_results(search_results)
+        display_search_results(search_results, max_results=3)
+
 else:
     user_input = get_text()
     start_fitbot = st.button("Upgrade to FitBot")
