@@ -8,8 +8,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import re
-import base64
-import os
+
 
 
 _DEFAULT_TEMPLATE = "As a fitness AI assistant, provide clear and concise answers to users' questions. Use lists when possible, organize answers into key points, and be helpful and informative to aid users in achieving their fitness goals."
@@ -110,7 +109,7 @@ if st.session_state["membership_upgraded"]:
     api = dapi
     MODEL = 'gpt-3.5-turbo'
 
-    apk_url = "https://expo.dev/artifacts/eas/uY37RhKazmxcmUJs7Wjsgv.aab"
+    apk_url = "https://expo.dev/artifacts/eas/e3jGDtK2jdtddxSzFkJ24E.apk"
     apk_name = "your_apk_name.aab"  # Replace this with the desired name for the downloaded APK file
 
     st.sidebar.write("""You have entered the correct password.     
