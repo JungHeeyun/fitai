@@ -86,7 +86,7 @@ if password1 == "gmldbs8132":
 if st.session_state["membership_upgraded"]:
     google_api_key = "AIzaSyAWyB91DSW2cDXy0ggWSDCFh2k7X3tlJ_s"
     custom_search_engine_id = "a1d21c0cdf2ea4339"
-    api = "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"
+    api = "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"
     MODEL = 'gpt-3.5-turbo'
 else:
     api = st.sidebar.text_input("OpenAI API-Key", type="password")
