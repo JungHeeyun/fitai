@@ -8,8 +8,11 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import re
+import base64
+import os
 
-_DEFAULT_TEMPLATE = "From now on, you are my fitness AI assistant. Provide clear and concise answers to users' questions. Use lists when possible, organize answers into key points, and be helpful and informative to aid users in achieving their fitness goals."
+
+_DEFAULT_TEMPLATE = "As a fitness AI assistant, provide clear and concise answers to users' questions. Use lists when possible, organize answers into key points, and be helpful and informative to aid users in achieving their fitness goals."
 
 def google_search_api(query, api_key, custom_search_engine_id):
     url = f"https://www.googleapis.com/customsearch/v1?key={api_key}&cx={custom_search_engine_id}&q={query}"
@@ -84,8 +87,10 @@ def get_api_key():
 
     return part1 + part2 + part3 + part4 + part5 + part6 + part7 + part8
 
-# Example usage:
-dapi = get_api_key()
+def get_apk_download_link(file_url, file_name):
+    href = f'<a href="{file_url}" download="{file_name}" target="_blank">Download APK</a>'
+    return href
+
 
 st.title("FIT BOT: Revolution of Fitness APP")
 
@@ -93,6 +98,8 @@ sidebar_options = ["Home", "FitBot AI Personal Trainer", "Search"]
 selected_option = st.sidebar.selectbox("Navigation", sidebar_options)
 
 password1 = st.sidebar.text_input("Enter membership password:", type="password", key="membership_password")
+dapi = get_api_key()
+
 st.session_state["membership_upgraded"] = False
 if password1 == "gmldbs8132":
     st.session_state["membership_upgraded"] = True
@@ -102,6 +109,13 @@ if st.session_state["membership_upgraded"]:
     custom_search_engine_id = "a1d21c0cdf2ea4339"
     api = dapi
     MODEL = 'gpt-3.5-turbo'
+
+    apk_url = "https://expo.dev/artifacts/eas/uY37RhKazmxcmUJs7Wjsgv.aab"
+    apk_name = "your_apk_name.aab"  # Replace this with the desired name for the downloaded APK file
+
+    st.sidebar.write("""You have entered the correct password.     
+         Click the button below to download the APK.""")
+    st.sidebar.markdown(get_apk_download_link(apk_url, apk_name), unsafe_allow_html=True)
 else:
     api = st.sidebar.text_input("OpenAI API-Key", type="password")
     google_api_key = st.sidebar.text_input("Google API-Key", type="password")
