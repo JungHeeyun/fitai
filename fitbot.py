@@ -110,7 +110,7 @@ if st.session_state["membership_upgraded"]:
     MODEL = 'gpt-3.5-turbo'
 
     apk_url = "https://expo.dev/artifacts/eas/e3jGDtK2jdtddxSzFkJ24E.apk"
-    apk_name = "your_apk_name.aab"  # Replace this with the desired name for the downloaded APK file
+    apk_name = "your_apk_name.apk"  # Replace this with the desired name for the downloaded APK file
 
     st.sidebar.write("""You have entered the correct password.     
          Click the button below to download the APK.""")
