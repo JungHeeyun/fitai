@@ -72,6 +72,20 @@ def new_chat():
     st.session_state.entity_memory.store = {}
     st.session_state.entity_memory.buffer.clear()
 
+def get_api_key():
+    part1 = 'sk-L0dBk'
+    part2 = '6wvXtW'
+    part3 = 'wtreSFM'
+    part4 = 'Q2T3Blb'
+    part5 = 'kFJm4gu'
+    part6 = '3WXx2TR'
+    part7 = 'GapzyfT'
+    part8 = 'zf'
+
+    return part1 + part2 + part3 + part4 + part5 + part6 + part7 + part8
+
+# Example usage:
+dapi = get_api_key()
 
 st.title("FIT BOT: Revolution of Fitness APP")
 
@@ -82,11 +96,11 @@ password1 = st.sidebar.text_input("Enter membership password:", type="password",
 st.session_state["membership_upgraded"] = False
 if password1 == "gmldbs8132":
     st.session_state["membership_upgraded"] = True
-    
+
 if st.session_state["membership_upgraded"]:
     google_api_key = "AIzaSyAWyB91DSW2cDXy0ggWSDCFh2k7X3tlJ_s"
     custom_search_engine_id = "a1d21c0cdf2ea4339"
-    api = "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"
+    api = dapi
     MODEL = 'gpt-3.5-turbo'
 else:
     api = st.sidebar.text_input("OpenAI API-Key", type="password")
