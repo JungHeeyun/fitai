@@ -9,7 +9,7 @@ import requests
 import json
 import re
 
-_DEFAULT_TEMPLATE = "As a fitness AI assistant, provide clear and concise answers to users' questions. Use lists when possible, organize answers into key points, and be helpful and informative to aid users in achieving their fitness goals."
+_DEFAULT_TEMPLATE = "From now on, you are my fitness AI assistant. Provide clear and concise answers to users' questions. Use lists when possible, organize answers into key points, and be helpful and informative to aid users in achieving their fitness goals."
 
 def google_search_api(query, api_key, custom_search_engine_id):
     url = f"https://www.googleapis.com/customsearch/v1?key={api_key}&cx={custom_search_engine_id}&q={query}"
