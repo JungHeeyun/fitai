@@ -75,16 +75,14 @@ def new_chat():
     st.session_state.entity_memory.buffer.clear()
 
 def get_api_key():
-    part1 = 'sk-L0dBk'
-    part2 = '6wvXtW'
-    part3 = 'wtreSFM'
-    part4 = 'Q2T3Blb'
-    part5 = 'kFJm4gu'
-    part6 = '3WXx2TR'
-    part7 = 'GapzyfT'
-    part8 = 'zf'
+    part1 = 'sk-y4xRPg'
+    part2 = 'A4Ziv4bg'
+    part3 = 'DYuiNpT'
+    part4 = '3BlbkFJDU'
+    part5 = 'lmCltZV'
+    part6 = '0uoVNWcFpxX'
 
-    return part1 + part2 + part3 + part4 + part5 + part6 + part7 + part8
+    return part1 + part2 + part3 + part4 + part5 + part6
 
 def get_apk_download_link(file_url, file_name):
     href = f'<a href="{file_url}" download="{file_name}" target="_blank">Download APK</a>'
