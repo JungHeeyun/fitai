@@ -127,7 +127,7 @@ if api:
     )
 
     if 'entity_memory' not in st.session_state:
-        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=10)
+        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=20)
 
     Conversation = ConversationChain(
         llm=llm,
@@ -189,10 +189,9 @@ else:
         user_input = _DEFAULT_TEMPLATE
         output = Conversation.run(input=user_input)
         st.session_state.past.append("Introduce yourself, FitBot!")
-        st.session_state.generated.append(
-            "I am an Fitness AI assistant designed to provide information and guidance related to fitness. My purpose is to assist users in achieving their fitness goals by providing accurate and helpful information on workout routines, nutrition, and healthy lifestyle habits. Is there anything specific you would like to know about fitness?")
+        st.session_state.generated.append( "I am an Fitness AI assistant designed to provide information and guidance related to fitness. My purpose is to assist users in achieving their fitness goals by providing accurate and helpful information on workout routines, nutrition, and healthy lifestyle habits. Is there anything specific you would like to know about fitness?")
     elif user_input:
-        output = Conversation.run(input=user_input)
+        output = Conversation.run(input=user_input + "(remember your role)")
         st.session_state.past.append(user_input)
         st.session_state.generated.append(output)
 
