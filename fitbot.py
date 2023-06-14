@@ -75,12 +75,12 @@ def new_chat():
     st.session_state.entity_memory.buffer.clear()
 
 def get_api_key():
-    part1 = 'sk-y4xRPg'
-    part2 = 'A4Ziv4bg'
-    part3 = 'DYuiNpT'
-    part4 = '3BlbkFJDU'
-    part5 = 'lmCltZV'
-    part6 = '0uoVNWcFpxX'
+    part1 = 'sk-SatZ5Gz'
+    part2 = 'ajbHXmOn'
+    part3 = 'NHVmTT3Bl'
+    part4 = 'bkFJq4YF'
+    part5 = '6FLuAA'
+    part6 = 'aWAhjbiCmO'
 
     return part1 + part2 + part3 + part4 + part5 + part6
 
